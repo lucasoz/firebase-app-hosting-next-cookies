@@ -21,6 +21,7 @@ export default function Home({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const cookies = new Cookies();
   const currentCookie = cookies.get("__session");
+  const [clientCookie, setClientCookie] = useState();
   const [cookieText, setCookieText] = useState("test-cookie");
   const [, setCookie] = useCookies(["__session"]);
   const { reload } = useRouter();
@@ -28,6 +29,7 @@ export default function Home({
   useEffect(() => {
     if (currentCookie) {
       setCookieText(currentCookie);
+      setClientCookie(currentCookie);
     }
   }, []);
 
@@ -50,7 +52,7 @@ export default function Home({
           <b>Current server cookie (__session):</b> {serverCookie}
         </span>
         <span className="text-black mb-6 ">
-          <b>Current client cookie (__session):</b> {cookieText}
+          <b>Current client cookie (__session):</b> {clientCookie}
         </span>
         <input
           type="text"
