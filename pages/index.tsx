@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { Cookies } from "react-cookie";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
@@ -20,10 +20,16 @@ export default function Home({
   serverCookie,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const cookies = new Cookies();
-  const currentCookie = serverCookie ?? cookies.get("__session");
-  const [cookieText, setCookieText] = useState(currentCookie ?? "test-cookie");
+  const currentCookie = cookies.get("__session");
+  const [cookieText, setCookieText] = useState("test-cookie");
   const [, setCookie] = useCookies(["__session"]);
   const { reload } = useRouter();
+
+  useEffect(() => {
+    if (currentCookie) {
+      setCookieText(currentCookie);
+    }
+  }, []);
 
   const onClick = () => {
     setCookie("__session", cookieText, {
@@ -41,7 +47,10 @@ export default function Home({
     >
       <div className="flex flex-col gap-2 items-end">
         <span className="text-black mb-6 ">
-          <b>Current cookie (__session):</b> {currentCookie}
+          <b>Current server cookie (__session):</b> {serverCookie}
+        </span>
+        <span className="text-black mb-6 ">
+          <b>Current client cookie (__session):</b> {cookieText}
         </span>
         <input
           type="text"
